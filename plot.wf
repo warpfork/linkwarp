@@ -1,0 +1,118 @@
+{
+  "plot.v1": {
+    "inputs": {
+      "glibc": "catalog:warpsys.org/bootstrap/glibc:v2.35:amd64",
+      "ld": "catalog:warpsys.org/bootstrap/glibc:v2.35:ld-amd64",
+      "gcc": "catalog:warpsys.org/bootstrap/gcc:v11.2.0:amd64",
+      "rootfs": "catalog:warpsys.org/busybox:v1.35.0:amd64-static",
+      "golang": "catalog:go.dev/dl/go:1.18.7:linux-amd64",
+      "repo": "ingest:git:.:HEAD"
+    },
+    "steps": {
+      "pre-cache": {
+        "protoformula": {
+          "inputs": {
+            "/": "pipe::rootfs",
+            "/src": "pipe::repo",
+            "$PATH": "literal:/bin"
+          },
+          "action": {
+            "script": {
+              "interpreter": "/bin/sh",
+              "contents": [
+                "set -e",
+                "mkdir -p /tmp/mod",
+                "cp /src/go.mod /src/go.sum /tmp/mod"
+              ],
+              "network": false
+            }
+          },
+          "outputs": {
+            "out": {
+              "from": "/tmp/mod",
+              "packtype": "tar"
+            }
+          }
+        }
+      },
+      "cache": {
+        "protoformula": {
+          "inputs": {
+            "/": "pipe::rootfs",
+            "/lib64": "pipe::ld",
+            "/pkg/glibc": "pipe::glibc",
+            "/pkg/gcc": "pipe::gcc",
+            "/pkg/go": "pipe::golang",
+            "/tmp/mod/": "pipe:pre-cache:out",
+            "$GOROOT": "literal:/pkg/go/go",
+            "$CGO_ENABLED": "literal:0",
+            "$LD_LIBRARY_PATH": "literal:/pkg/glibc/lib",
+            "$GO_LDFLAGS": "literal:-L /pkg/glibc/lib",
+            "$CPATH": "literal:/pkg/glibc/include:/pkg/glibc/include/x86_64-linux-gnu",
+            "$PATH": "literal:/bin:/pkg/go/go/bin:/pkg/gcc/bin",
+            "$GOMODCACHE": "literal:/tmp/cache"
+          },
+          "action": {
+            "script": {
+              "interpreter": "/bin/sh",
+              "contents": [
+                "set -e",
+                "echo caching dependencies",
+                "mkdir -p /tmp/cache",
+                "cd /tmp/mod",
+                "go mod download -modcacherw -x"
+              ],
+              "network": true
+            }
+          },
+          "outputs": {
+            "out": {
+              "from": "/tmp/cache",
+              "packtype": "tar"
+            }
+          }
+        }
+      },
+      "build": {
+        "protoformula": {
+          "inputs": {
+            "/": "pipe::rootfs",
+            "/lib64": "pipe::ld",
+            "/pkg/glibc": "pipe::glibc",
+            "/pkg/gcc": "pipe::gcc",
+            "/pkg/go": "pipe::golang",
+            "/src/": "pipe::repo",
+            "/tmp/cache": "pipe:cache:out",
+            "$GOMODCACHE": "literal:/tmp/cache",
+            "$GOROOT": "literal:/pkg/go/go",
+            "$CGO_ENABLED": "literal:0",
+            "$LD_LIBRARY_PATH": "literal:/pkg/glibc/lib",
+            "$GO_LDFLAGS": "literal:-L /pkg/glibc/lib",
+            "$CPATH": "literal:/pkg/glibc/include:/pkg/glibc/include/x86_64-linux-gnu",
+            "$PATH": "literal:/bin:/pkg/go/go/bin:/pkg/gcc/bin"
+          },
+          "action": {
+            "script": {
+              "interpreter": "/bin/sh",
+              "contents": [
+                "set -e",
+                "cd /src",
+                "go build -v -tags netgo -o /output/linkwarp ./cmd/linkwarp/..."
+              ],
+              "network": false
+            }
+          },
+          "outputs": {
+            "out": {
+              "from": "/output",
+              "packtype": "tar"
+            }
+          }
+        }
+      }
+    },
+    "outputs": {
+      "linux-amd64": "pipe:build:out"
+    }
+  }
+}
