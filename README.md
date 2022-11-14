@@ -21,7 +21,7 @@ Installation
 ------------
 
 ```
-go get github.com/warpfork/linkwarp/cmd/linkwarp@latest
+go get github.com/warptools/linkwarp/cmd/linkwarp@latest
 ```
 
 

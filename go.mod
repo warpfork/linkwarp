@@ -1,4 +1,4 @@
-module github.com/warpfork/linkwarp
+module github.com/warptools/linkwarp
 
 go 1.18
 

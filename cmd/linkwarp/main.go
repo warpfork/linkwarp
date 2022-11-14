@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/warpfork/linkwarp"
+	"github.com/warptools/linkwarp"
 
 	"github.com/jawher/mow.cli"
 )
