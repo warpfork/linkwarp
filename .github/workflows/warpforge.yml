@@ -1,0 +1,9 @@
+on: [push]
+
+jobs:
+  warpforge_job:
+    runs-on: ubuntu-latest
+    name: warpforge
+    steps:
+      - uses: actions/checkout@v3
+      - uses: TripleDogDare/warpforge-gh-action@test
