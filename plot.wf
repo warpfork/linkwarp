@@ -2,7 +2,7 @@
   "plot.v1": {
     "inputs": {
       "glibc": "catalog:warpsys.org/bootstrap/glibc:v2.35:amd64",
-      "ld": "catalog:warpsys.org/bootstrap/glibc:v2.35:ld-amd64",
+      "ld": "catalog:warpsys.org/bootstrap/glibc:v2.35:amd64",
       "gcc": "catalog:warpsys.org/bootstrap/gcc:v11.2.0:amd64",
       "rootfs": "catalog:warpsys.org/busybox:v1.35.0:amd64-static",
       "golang": "catalog:go.dev/dl/go:1.18.7:linux-amd64",
