@@ -6,6 +6,6 @@ jobs:
     name: warpforge
     steps:
       - uses: actions/checkout@v3
-      - uses: TripleDogDare/warpforge-gh-action@test
+      - uses: TripleDogDare/warpforge-gh-action@main
         with:
           ref: fix-cache-path-panic
