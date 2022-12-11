@@ -1,0 +1,18 @@
+on:
+  push:
+    branches:
+      - 'master'
+      - 'main'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  warpforge_job:
+    runs-on: ubuntu-latest
+    name: warpforge
+    steps:
+      - uses: actions/checkout@v3
+      - uses: TripleDogDare/warpforge-gh-action@test
+        with:
+          ref: master

@@ -1,0 +1,9 @@
+{
+	"catalogmirrors.v1": {
+		"byWare": {
+			"tar:GC7V9jVyoYgM3Kk21ooqtDmitMobyCsUaRZ2RQXofGXH2eAp9Rdj1dQx7o9ryBQtz": [
+				"https://go.dev/dl/go1.18.7.linux-amd64.tar.gz"
+			]
+		}
+	}
+}
